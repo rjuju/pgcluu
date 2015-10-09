@@ -53,7 +53,7 @@ my $SADC_INPUT_FILE = '';
 my $SAR_INPUT_FILE  = '';
 our @DEVICE_LIST    = ();
 our @IFACE_LIST     = ();
-my @GRAPH_COLORS    = ('#6e9dc9', '#f4ab3a', '#ac7fa8', '#8dbd0f'); 
+my @GRAPH_COLORS    = ('#6e9dc9', '#f4ab3a', '#ac7fa8', '#8dbd0f');
 my $ZCAT_PROG       = '/bin/zcat';
 my $INTERVAL        = 1;
 my $CAPTURE         = 0;
@@ -1149,7 +1149,7 @@ foreach (my $dx = 0; $dx <= $#WORK_DIRS; $dx++) {
 					}
 				} elsif (-e "$in_dir/$k.gz" && !-z "$in_dir/$k.gz") {
 					if (-e "$in_dir/$k.gz" && !-z "$in_dir/$k.gz") {
-						&compute_postgresql_stat($in_dir, "$k.gz", $src_base, %{$DB_GRAPH_INFOS{$k}}); 
+						&compute_postgresql_stat($in_dir, "$k.gz", $src_base, %{$DB_GRAPH_INFOS{$k}});
 						push(@statistics_build, $k);
 					}
 				} elsif ($k =~ /_all_/) {
@@ -1197,14 +1197,14 @@ foreach (my $dx = 0; $dx <= $#WORK_DIRS; $dx++) {
 			}
 
 		}
-		
+
 		if (!$CACHE) {
 
 			# Loop over statistic in memory to generate reports
 			print "DEBUG: Building PostgreSQL statistics reports\n" if ($DEBUG);
 			if ($#statistics_build > 0) {
 				foreach my $k (@statistics_build) {
-					&compute_postgresql_report($k, $src_base, %{$DB_GRAPH_INFOS{$k}}); 
+					&compute_postgresql_report($k, $src_base, %{$DB_GRAPH_INFOS{$k}});
 				}
 			} else {
 				# Try to limit report generation to stats that exists in memory.
@@ -1228,9 +1228,9 @@ foreach (my $dx = 0; $dx <= $#WORK_DIRS; $dx++) {
 					if ($k =~ /_all_/) {
 						my $f = $k;
 						$f =~ s/_all_/_user_/;
-						&compute_postgresql_report($f, $src_base, %{$DB_GRAPH_INFOS{$k}}); 
+						&compute_postgresql_report($f, $src_base, %{$DB_GRAPH_INFOS{$k}});
 					} else {
-						&compute_postgresql_report($k, $src_base, %{$DB_GRAPH_INFOS{$k}}); 
+						&compute_postgresql_report($k, $src_base, %{$DB_GRAPH_INFOS{$k}});
 					}
 				}
 			}
@@ -2161,7 +2161,7 @@ sub pg_stat_database_report
 			$fhcluster->close();
 		}
 	}
-	
+
 	foreach my $id (sort {$a <=> $b} keys %data_info) {
 		my %data = ();
 		my $found = 0;
@@ -4063,7 +4063,7 @@ sub pg_class_size_report
 			$fhtable->close;
 		}
 	}
-	
+
 	%all_class_size = ();
 }
 
@@ -6804,7 +6804,7 @@ sub compute_cpu_report
 	my %cpu_stat = ();
 	foreach my $t (sort {$a <=> $b} keys %sar_cpu_stat) {
 		foreach my $cpu (keys %{$sar_cpu_stat{$t}}) {
-			
+
 			if ($cpu eq 'all') {
 				if (!exists $OVERALL_STATS{'system'}{'cpu'} || ($OVERALL_STATS{'system'}{'cpu'}[1] < $sar_cpu_stat{$t}{$cpu}{total})) {
 					@{$OVERALL_STATS{'system'}{'cpu'}} = ($t, $sar_cpu_stat{$t}{$cpu}{total});
@@ -7214,7 +7214,7 @@ sub compute_rw_device_report
 	my %devices_stat = ();
 	foreach my $t (sort {$a <=> $b} keys %sar_rw_devices_stat) {
 		foreach my $dev (keys %{$sar_rw_devices_stat{$t}}) {
-			if ($data_info->{name} eq 'system-device') { 
+			if ($data_info->{name} eq 'system-device') {
 				$OVERALL_STATS{'system'}{'devices'}{$dev}{read} += $sar_rw_devices_stat{$t}{$dev}{'rd_sec/s'};
 				$OVERALL_STATS{'system'}{'devices'}{$dev}{write} += $sar_rw_devices_stat{$t}{$dev}{'wr_sec/s'};
 				$devices_stat{$dev}{'rd_sec/s'} .= '[' . $t . ',' . $sar_rw_devices_stat{$t}{$dev}{'rd_sec/s'} . '],';
@@ -7232,7 +7232,7 @@ sub compute_rw_device_report
 				push(@DEVICE_LIST, $n);
 				&init_device_output($#DEVICE_LIST, $src_base);
 			}
-			if ($data_info->{name} eq 'system-device') { 
+			if ($data_info->{name} eq 'system-device') {
 				$devices_stat{$n}{'rd_sec/s'} =~ s/,$//;
 				$devices_stat{$n}{'wr_sec/s'} =~ s/,$//;
 				$DEVFH{$n}->print( &flotr2_linegraph_array($IDX++, 'device-read_write', $data_info, $n, $devices_stat{$n}{'rd_sec/s'}, $devices_stat{$n}{'wr_sec/s'}) );
@@ -7316,7 +7316,7 @@ sub compute_network_report
 		}
 	}
 	%sar_networks_stat = ();
-	
+
 	if (scalar keys %networks_stat > 0) {
 		foreach my $n (sort { $a cmp $b } keys %networks_stat) {
 			if (!exists $DEVFH{$n}) {
@@ -8240,7 +8240,7 @@ sub convert_sar_time
 		} elsif ($am_pm && ($am_pm eq 'PM')) {
 			$h += 12 if ($h < 12);
 		}
-			
+
 		my $time = ($h*3600)+($m*60)+$s;
 
 		my $tz = ((0-$TIMEZONE)*3600);
@@ -8863,7 +8863,7 @@ sub clear_db_stats
 		} else {
 			%{$name} = ();
 		}
-	}		
+	}
 }
 
 
@@ -8878,7 +8878,7 @@ sub clear_stats
 	%sysinfo = ();
 	foreach my $name (@sar_to_be_stored) {
 		%{$name} = ();
-	}		
+	}
 
 }
 
@@ -9212,7 +9212,7 @@ ul#slides li div div {
 	font-size: 1.0em;
 	margin: 0;
 	padding: 0;
-}       
+}
 
 .mfigure {
 	font-weight: bold;
@@ -9328,8 +9328,8 @@ var browser_warning = "Your browser doesn't allow you to get a bitmap image from
 		}
 	}
  }
- 
-function write_buttons(idbutton) 
+
+function write_buttons(idbutton)
 {
      document.writeln(
  	'<a class="btn btn-danger" href="#" role="button" id="toimage'+idbutton+'" onclick="return false;">To image</a>'+
@@ -9337,15 +9337,15 @@ function write_buttons(idbutton)
  	'<a class="btn btn-danger" href="#" role="button" id="download'+idbutton+'" onclick="return false;">Download</a>'
      );
 }
- 
-function dateTracker(obj, gtype, labels, datasets) 
+
+function dateTracker(obj, gtype, labels, datasets)
 {
-	var dateToDisplay = new Date(parseInt(obj.x)); 
+	var dateToDisplay = new Date(parseInt(obj.x));
 	var posValue = parseInt(obj.x);
 
-	// look for the position in data arrays 
+	// look for the position in data arrays
 	var pos = 0;
-	if (datasets != undefined) { 
+	if (datasets != undefined) {
 		for (pos=0; pos < datasets[0].length; pos++) {
 			// If timestamp are the same we have found the position
 			if (datasets[0][pos][0] == posValue) {
@@ -9366,8 +9366,8 @@ function dateTracker(obj, gtype, labels, datasets)
 	textToShow += '</div>';
 	return textToShow;
 }
- 
-function pretty_print_number(val, type) 
+
+function pretty_print_number(val, type)
 {
  	if (type == 'size') {
  		if (val >= 1125899906842624) {
@@ -9425,9 +9425,9 @@ function pretty_print_number(val, type)
  	}
  	return val;
  }
- 
- 
- function pieTracker(obj) 
+
+
+ function pieTracker(obj)
  {
  	return obj.series.label+': '+obj.y;
  }
@@ -9818,10 +9818,10 @@ sorttable = {
   sort_alpha: function(a,b) {
     // PgCluu: remove percentage for numeric sort
     if (a[0].replace(/ <.*\(.*%\).*/, '')) {
-	b[0].replace(/ <.*\(.*%\).*/,''); 
+	b[0].replace(/ <.*\(.*%\).*/,'');
 	aa = parseFloat(a[0].replace(/[^0-9.-]/g,''));
 	if (isNaN(aa)) aa = 0;
-	bb = parseFloat(b[0].replace(/[^0-9.-]/g,'')); 
+	bb = parseFloat(b[0].replace(/[^0-9.-]/g,''));
 	if (isNaN(bb)) bb = 0;
 	return aa-bb;
     } else {
